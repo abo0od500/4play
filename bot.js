@@ -48,7 +48,6 @@ const queue = new Map();
 var prefix = "4" 
 client.on('message', async msg => {
     //--
-    if (msg.channel.id === process.env.BOT_CHAT_ID) {
  
     if (msg.author.bot) return undefined;
    
@@ -174,7 +173,7 @@ ${serverQueue.songs.map(song => `**${++index} -** ${song.title}`).join('\n')}
     }
  
     return undefined;
-    }
+    
 }); //--
  
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
