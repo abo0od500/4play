@@ -3,7 +3,7 @@ const client = new Discord.Client();
  
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-   client.user.setActivity("lplay",{type: 'WATCHING'})
+   client.user.setActivity("mplay",{type: 'WATCHING'})
   console.log('')
   console.log('')
   console.log('╔[═════════════════════════════════════════════════════════════════]╗')
@@ -40,7 +40,7 @@ const queue = new Map();
      
 
  
-var prefix = "l" 
+var prefix = "m" 
 client.on('message', async msg => {
     //--
 
