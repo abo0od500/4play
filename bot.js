@@ -3,7 +3,7 @@ const client = new Discord.Client();
  
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-   client.user.setActivity("4PLAY",{type: 'WATCHING'})
+   client.user.setActivity("lplay",{type: 'WATCHING'})
   console.log('')
   console.log('')
   console.log('╔[═════════════════════════════════════════════════════════════════]╗')
@@ -27,13 +27,7 @@ client.on('ready', () => {
   console.log('')
 });
 
-client.on('ready', () => {
-  // Get the channel via ID
-  let channel = client.channels.get('522860385817067522');
-  channel.join()
-  .then(connection => console.log('Connected'))
-  .catch(console.error);
-});
+
  
 const ytdl = require("ytdl-core");
 const { Client, Util } = require('discord.js');
@@ -43,12 +37,13 @@ const YouTube = require('simple-youtube-api');
 const youtube = new YouTube("AIzaSyAdORXg7UZUo7sePv97JyoDqtQVi3Ll0b8");
 const queue = new Map();
  
+     
+
  
- 
-var prefix = "4" 
+var prefix = "l" 
 client.on('message', async msg => {
     //--
- 
+
     if (msg.author.bot) return undefined;
    
     if (!msg.content.startsWith(prefix)) return undefined;
@@ -57,11 +52,14 @@ client.on('message', async msg => {
    
     const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
     const serverQueue = queue.get(msg.guild.id);
- 
+	
+	//serverQueue.connection.dispatcher.setVolumeLogarithmic(10);
     let command = msg.content.toLowerCase().split(" ")[0];
     command = command.slice(prefix.length)
  
     if (command === `play`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
         const voiceChannel = msg.member.voiceChannel;
         if (!voiceChannel) return msg.channel.send('يجب توآجدك بروم صوتي .');
         const permissions = voiceChannel.permissionsFor(msg.client.user);
@@ -86,6 +84,7 @@ client.on('message', async msg => {
                 await handleVideo(video2, msg, voiceChannel, true); // eslint-disable-line no-await-in-loop
             }
             return msg.channel.send(` **${playlist.title}** تم الإضآفة إلى قأئمة التشغيل`);
+			
         } else {
             try {
  
@@ -123,29 +122,45 @@ ${videos.map(video2 => `[**${++index} **] \`${video2.title}\``).join('\n')}`)
             return handleVideo(video, msg, voiceChannel);
         }
     } else if (command === `skip`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
+    
         if (!msg.member.voiceChannel) return msg.channel.send('أنت لست بروم صوتي .');
+        if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
         if (!serverQueue) return msg.channel.send('لا يتوفر مقطع لتجآوزه');
         serverQueue.connection.dispatcher.end('تم تجآوز هذآ المقطع');
         return undefined;
     } else if (command === `leave`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
+     
         if (!msg.member.voiceChannel) return msg.channel.send('أنت لست بروم صوتي .');
         if (!serverQueue) return msg.channel.send('لا يتوفر مقطع لإيقآفه');
         serverQueue.songs = [];
         serverQueue.connection.dispatcher.end('تم إيقآف هذآ المقطع');
         return undefined;
     } else if (command === `vol`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
+     
         if (!msg.member.voiceChannel) return msg.channel.send('أنت لست بروم صوتي .');
         if (!serverQueue) return msg.channel.send('لا يوجد شيء شغآل.');
         if (!args[1]) return msg.channel.send(`:loud_sound: مستوى الصوت **${serverQueue.volume}**`);
         serverQueue.volume = args[1];
-        serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 50);
+        serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
         return msg.channel.send(`:speaker: تم تغير الصوت الي **${args[1]}**`);
     } else if (command === `np`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
+     
         if (!serverQueue) return msg.channel.send('لا يوجد شيء حالي ف العمل.');
         const embedNP = new Discord.RichEmbed()
     .setDescription(`:notes: الان يتم تشغيل : **${serverQueue.songs[0].title}**`)
         return msg.channel.sendEmbed(embedNP);
     } else if (command === `queue`) {
+      if (msg.channel.id != process.env.BOTCHAT) return msg.channel.send('حاطين لك شات بوت ليه انت وراسك!!'); 
+      if (msg.author.voiceChannel != client.user.voiceChannel) return msg.channel.send('أنت لست بالروم صوتي .');
+  
        
         if (!serverQueue) return msg.channel.send('لا يوجد شيء حالي ف العمل.');
         let index = 0;
@@ -221,7 +236,7 @@ function play(guild, song) {
     const serverQueue = queue.get(guild.id);
  
     if (!song) {
-        serverQueue.voiceChannel.leave();
+        // serverQueue.voiceChannel.leave();
         queue.delete(guild.id);
         return;
     }
@@ -235,13 +250,14 @@ function play(guild, song) {
             play(guild, serverQueue.songs[0]);
         })
         .on('error', error => console.error(error));
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
- 
+    //dispatcher.setVolumeLogarithmic(10);
+	
+	
     serverQueue.textChannel.send(`بدء تشغيل : **${song.title}**`);
 }
  
 const adminprefix = "1admin";
-const devs = ['482335925867642881'];
+const devs = ['524237957469700117'];
 client.on('message', message => {
   var argresult = message.content.split(` `).slice(1).join(' ');
     if (!devs.includes(message.author.id)) return;
